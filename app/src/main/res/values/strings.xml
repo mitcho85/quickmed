@@ -30,4 +30,10 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="title_activity_forms">FormsActivity</string>
+    <string-array name="sections_array2">
+        <item>Section I: Patient Information</item>
+        <item>Section II: Weight</item>
+        <item>Section III: Blood</item>
+        <item>Section IV: Other</item>
+    </string-array>
 </resources>

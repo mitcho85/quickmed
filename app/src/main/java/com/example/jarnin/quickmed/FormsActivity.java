@@ -34,7 +34,7 @@ public class FormsActivity extends AppCompatActivity {
         healthFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FormsActivity.this, HealthFormActivity.class);
+                Intent intent = new Intent(FormsActivity.this, TestFormActivity.class);
                 startActivity(intent);
             }
         });
