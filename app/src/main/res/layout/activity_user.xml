@@ -6,30 +6,19 @@
     tools:context="com.example.jarnin.quickmed.UserActivity">
     <Button
         android:id="@+id/newPatientButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Patient"
-        android:textColor="#FFFFFF"
-        android:typeface="sans"
-        android:background="#48b3e2"
-        android:textAllCaps="false"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="30dp"/>
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/patient"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:singleLine="false" />
     <Button
         android:id="@+id/viewPatientButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View Patient"
-        android:textColor="#FFFFFF"
-        android:typeface="sans"
-        android:background="#48b3e2"
-        android:textAllCaps="false"
-        android:layout_margin="5dp"
-        android:textSize="30dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/newPatientButton" />
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/patients"
+        android:layout_below="@+id/newPatientButton"
+        android:layout_marginTop="30dp"
+        android:layout_alignLeft="@+id/newPatientButton"
+        android:layout_alignStart="@+id/newPatientButton" />
 </RelativeLayout>
