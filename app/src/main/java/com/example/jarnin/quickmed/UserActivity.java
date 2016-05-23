@@ -13,11 +13,15 @@ import android.widget.Toast;
 public class UserActivity extends AppCompatActivity {
     protected Button newPatientButton;
     protected Button viewPatientButton;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+        //Open database
+        dbHelper = new DBHelper(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -26,6 +30,7 @@ public class UserActivity extends AppCompatActivity {
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dbHelper.insertNewPatient();
                 Intent intent = new Intent(UserActivity.this, FormsActivity.class);
                 startActivity(intent);
             }
@@ -38,6 +43,7 @@ public class UserActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Implementing local storage...", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
