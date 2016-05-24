@@ -41,15 +41,6 @@
                 android:value="com.example.jarnin.quickmed.UserActivity" />
         </activity>
         <activity
-            android:name=".HealthFormActivity"
-            android:label="Health Test Results"
-            android:parentActivityName=".FormsActivity"
-            android:theme="@style/AppTheme.ActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jarnin.quickmed.FormsActivity" />
-        </activity>
-        <activity
             android:name=".UserActivity"
             android:label="Add/View Patients"
             android:parentActivityName=".LoginActivity"

@@ -1,13 +1,14 @@
 package com.example.jarnin.quickmed;
 import java.util.Locale;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -134,13 +135,15 @@ public class TestFormActivity extends AppCompatActivity {
 
     private void selectItem(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = new SurveySectionFragment();
+        TestFormFragment fragment = new TestFormFragment();
         Bundle args = new Bundle();
-        args.putInt(SurveySectionFragment.ARG_SECTION_NUMBER, position);
+        args.putInt(TestFormFragment.ARG_SECTION_NUMBER, position);
         fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
@@ -176,23 +179,20 @@ public class TestFormActivity extends AppCompatActivity {
     /**
      * Fragment that appears in the "content_frame", shows a planet
      */
-    public static class SurveySectionFragment extends Fragment {
+    public static class TestFormFragment extends Fragment {
         public static final String ARG_SECTION_NUMBER = "section_number";
 
-        public SurveySectionFragment() {
+        public TestFormFragment() {
             // Empty constructor required for fragment subclasses
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sections2, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_test_form, container, false);
             int i = getArguments().getInt(ARG_SECTION_NUMBER);
             String section = getResources().getStringArray(R.array.sections_array2)[i];
 
-            int imageId = getResources().getIdentifier(section.toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image2)).setImageResource(imageId);
             getActivity().setTitle(section);
             return rootView;
         }

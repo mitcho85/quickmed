@@ -9,5 +9,13 @@
     tools:context="com.example.jarnin.quickmed.TestFormActivityFragment"
     tools:showIn="@layout/activity_test_form">
 
+    <Button
+        android:id="@+id/randButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="hello"
+        android:layout_centerHorizontal="true"
+        android:singleLine="false" />
 
 </RelativeLayout>
