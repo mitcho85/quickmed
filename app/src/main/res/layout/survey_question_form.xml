@@ -8,45 +8,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jarnin.quickmed.SurveyFormActivityFragment"
     ><!--tools:showIn="@layout/activity_test_form"> -->
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
-    <TextView
-        android:id="@+id/surveyQuestion_tv_box1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="ENTERED BY ADAPTER"
-        android:layout_centerHorizontal="true"
-        android:singleLine="false"
-        android:textStyle="bold"/>
-    <EditText
-        android:id="@+id/surveyQuestion_et_box1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_centerHorizontal="true"
-        android:singleLine="false"
-        />
-    <TextView
-        android:id="@+id/surveyQuestion_tv_box2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="ENTERED BY ADAPTER"
-        android:layout_centerHorizontal="true"
-        android:singleLine="false"
-        android:textStyle="bold"/>
-    <EditText
-        android:id="@+id/surveyQuestion_et_box2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_centerHorizontal="true"
-        android:singleLine="false"
-        />
-</LinearLayout>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:id="@+id/fragment_linear_questions"
+        android:scrollbars="vertical">
+        <!--
+        <TextView
+            android:id="@+id/surveyQuestion_tv_box1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ENTERED BY ADAPTER"
+            android:layout_centerHorizontal="true"
+            android:singleLine="false"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/surveyQuestion_et_box1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_centerHorizontal="true"
+            android:singleLine="false"
+            />
+        <TextView
+            android:id="@+id/surveyQuestion_tv_box2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ENTERED BY ADAPTER"
+            android:layout_centerHorizontal="true"
+            android:singleLine="false"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/surveyQuestion_et_box2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_centerHorizontal="true"
+            android:singleLine="false"
+            /> -->
+    </LinearLayout>
     <!--
     <Button
         android:id="@+id/randButton"
@@ -57,4 +64,5 @@
         android:layout_centerHorizontal="true"
         android:singleLine="false" />
     -->
+</ScrollView>
 </RelativeLayout>

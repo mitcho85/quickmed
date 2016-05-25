@@ -19,10 +19,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
 
 public class SurveyFormActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
@@ -33,6 +37,7 @@ public class SurveyFormActivity extends AppCompatActivity {
     private CharSequence mTitle;
     private String[] mSections;
 
+    private static QuestionXmlParser parser;
     /*
         for the first time we create the SurveyFormActivity (at least for
         now, this might be entirely wrong later) we're going to parse through
@@ -89,11 +94,14 @@ public class SurveyFormActivity extends AppCompatActivity {
             this seems like a good place to parse the XML file.
          */
 
-        QuestionXmlParser parser = new QuestionXmlParser("questions.xml");
-        XmlPullParser pullParser = Xml.newPullParser();
-        parser.parseXMLAndStoreIt(pullParser);
-        XmlResourceParser xmlParser = this.getResources().getXml(R.xml.questions);
-
+        //QuestionXmlParser parser = new QuestionXmlParser("questions.xml");
+        parser = new QuestionXmlParser(this.getApplicationContext());
+        //XmlPullParser pullParser = Xml.newPullParser();
+        //parser.parseXMLAndStoreIt(pullParser);
+        //XmlResourceParser xmlParser = this.getResources().getXml(R.xml
+        //       .questions);
+        parser.parseXMLAndStoreIt();
+        int questionNumber = 0;
 
         if (savedInstanceState == null) {
             //select the top most item in the drawer (in this
@@ -215,12 +223,13 @@ public class SurveyFormActivity extends AppCompatActivity {
             int i = getArguments().getInt(ARG_SECTION_NUMBER);
             String section = getResources().getStringArray(R.array.sections_array)[i];
 
-            TextView tv_question1= (TextView) rootView.findViewById(R.id
+            /*TextView tv_question1= (TextView) rootView.findViewById(R.id
                     .surveyQuestion_tv_box1);
             TextView tv_question2= (TextView) rootView.findViewById(R.id
                     .surveyQuestion_tv_box2);
             EditText et_question1 = (EditText) rootView.findViewById(R.id
                     .surveyQuestion_et_box1);
+            */
 
             /*
                 Right now we can set the text for the fragment, but we're
@@ -236,8 +245,54 @@ public class SurveyFormActivity extends AppCompatActivity {
 
                  Note that the fragment is gotten above by rootView
              */
-            tv_question1.setText("hello from inside java");
-            tv_question2.setText("hello from second setText");
+            int questionNumbersToDisplay = 10;
+            QuestionXmlParser.Question q;
+
+            LinearLayout lay = (LinearLayout) rootView.findViewById(R.id.fragment_linear_questions);
+            TextView tv_question = new TextView(getActivity());
+            EditText et_response = new EditText(getActivity());
+            ArrayList<TextView> arrayQuestionTexts= new ArrayList<TextView>();
+            ArrayList<EditText> arrayResponseTexts= new ArrayList<EditText>();
+            int variableQNum = questionNumbersToDisplay;
+            int thisQuestionNumber = 0;
+            while(variableQNum > 0) {
+                q = parser.getNextQuestion(section, thisQuestionNumber);
+
+                arrayQuestionTexts.add(new TextView(getActivity()));
+                arrayQuestionTexts.get(arrayQuestionTexts.size()-1).setText(q.getQuestionText());
+                arrayResponseTexts.add(new EditText((getActivity())));
+                //arrayResponseTexts.get(arrayResponseTexts.size()-1);
+                variableQNum--;
+                thisQuestionNumber++;
+            }
+            //populate the fragment
+            while(!arrayQuestionTexts.isEmpty()) {
+                lay.addView(arrayQuestionTexts.get(0));
+                lay.addView(arrayResponseTexts.get(0));
+
+                arrayQuestionTexts.remove(0);
+                arrayResponseTexts.remove(0);
+
+            }
+
+
+            //this is bad coding. Wanted to just get some questions up and running, but now we're
+            // going to make it extendable for all questions in a particular section
+
+            /*QuestionXmlParser.Question q2 = parser.getNextQuestion(section,
+                    questionNumbersToDisplay);
+            QuestionXmlParser.Question q3 = parser.getNextQuestion(section,
+                    questionNumbersToDisplay);
+            QuestionXmlParser.Question q4 = parser.getNextQuestion(section,
+                    questionNumbersToDisplay);
+            QuestionXmlParser.Question q5 = parser.getNextQuestion(section,
+                    questionNumbersToDisplay);
+            */
+            /*tv_question1.setText(q1.getQuestionText());
+            tv_question2.setText(q2.getQuestionText());
+            */
+
+
             getActivity().setTitle(section);
             return rootView;
         }

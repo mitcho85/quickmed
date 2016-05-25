@@ -1,5 +1,7 @@
 package com.example.jarnin.quickmed;
 
+import android.content.Context;
+import android.util.Log;
 import android.util.Xml;
 import java.io.StringReader;
 import org.xmlpull.v1.*;
@@ -53,12 +55,14 @@ public class QuestionXmlParser {
     private String type = "type";
     private String response = "response";
 
-    private String fileName = "questions.xml";
+    private ArrayList<Question> questionArray = new ArrayList<Question>();
+    private int xmlResourceFile = 0;
     private XmlPullParserFactory xmlFactoryObject;
     public volatile boolean parsingComplete = true;
+    private Context context;
 
-    public QuestionXmlParser(String fileName) {
-        this.fileName = fileName;
+    public QuestionXmlParser(Context context) {
+        this.context = context;
     }
 
     public String getTitle() {
@@ -81,28 +85,84 @@ public class QuestionXmlParser {
         return this.response;
     }
 
-    public void parseXMLAndStoreIt(XmlPullParser parser) {
+    public class Question {
+        private String section = "";
+        private String questionText = "";
+        private String questionType = "";
+        private String response = "";
+
+        public Question (String section, String questionType, String
+                         questionText, String response) {
+            this.section = section;
+            this.questionType = questionType;
+            this.questionText = questionText;
+            this.response = response;
+        }
+
+        public String getSectionName () {
+            return this.section;
+        }
+
+        public String getQuestionText() {
+            return this.questionText;
+        }
+
+        public String getQuestionType() {
+            return this.questionType;
+        }
+        public String getResponse() {
+            return this.response;
+        }
+    }
+
+    public Question getNextQuestion(String questionSection, int
+            questionNumber) {
+        return this.questionArray.get(questionNumber);
+    }
+
+    private void pushNewQuestionToList(Question newQuestion) {
+        this.questionArray.add(newQuestion);
+    }
+
+    public void parseXMLAndStoreIt() {
         int event;
         String entryText = null;
+        InputStream stream = context.getResources().openRawResource(R.raw.questions);
 
         try {
+            xmlFactoryObject = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = xmlFactoryObject.newPullParser();
+            parser.setInput(stream, null);
             event = parser.getEventType();
 
             while(event != XmlPullParser.END_DOCUMENT) {
                 String entryName = parser.getName();
-
+                Log.e("parser", "parseXMLAndStoreIt: " + entryName);
+                Log.e("parser", "event: " + event);
                 switch(event) {
                     case XmlPullParser.START_TAG:
+                        //if(entryName.equals("question"))
+
                         break;
 
                     case XmlPullParser.TEXT:
                         entryText = parser.getText();
                         break;
                     case XmlPullParser.END_TAG:
+                        //section title, won't change until we hit new section
                         if (entryName.equals("title"))
                             title = entryText;
-                        else if (entryName.equals("question"))
-                            question = entryText;
+
+                        //at this point we should have all info needed to make
+                        //a question: section Title, question text, type, response
+                        else if (entryName.equals("question")){
+                            Question questionToPush = new Question(this.title, this.type, this
+                                    .text, this.response);
+                            pushNewQuestionToList(questionToPush);
+                            System.out.println("PUSHING NEW QUESTION TO ARRAYLIST");
+
+                        }
+
                         else if (entryName.equals("text"))
                             text = entryText;
                         else if (entryName.equals("type"))
@@ -114,6 +174,8 @@ public class QuestionXmlParser {
                         }
                         break;
                 }
+                //Push the new question to the questionArray here
+
                 event = parser.next();
             }
 
@@ -123,5 +185,7 @@ public class QuestionXmlParser {
         catch(Exception e) {
             e.printStackTrace();
         }
+
+        parsingComplete = true;
     }
 }
