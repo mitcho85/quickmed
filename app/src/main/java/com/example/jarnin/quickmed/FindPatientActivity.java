@@ -34,13 +34,13 @@ public class FindPatientActivity extends AppCompatActivity {
 
         // Listview Data
         // Store names/birthdays into this
-        String products[] = {};
+        String patients[] = {};
 
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.patientSearchBar);
 
         // Adding items to listview
-        adapter = new ArrayAdapter<String>(this, R.layout.search_list_item, R.id.patient_info, products);
+        adapter = new ArrayAdapter<String>(this, R.layout.search_list_item, R.id.patient_info, patients);
         lv.setAdapter(adapter);
 
         /**
