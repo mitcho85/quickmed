@@ -40,7 +40,9 @@ public class UserActivity extends AppCompatActivity {
         viewPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Implementing local storage...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(UserActivity.this, FindPatientActivity.class);
+                startActivity(intent);
+                //Toast.makeText(getApplicationContext(), "Implementing local storage...", Toast.LENGTH_SHORT).show();
             }
         });
 
