@@ -58,6 +58,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jarnin.quickmed.FormsActivity" ></meta-data>
         </activity>
+        <activity
+            android:name=".SurveyFormActivity"
+            android:label="Health Initiative Survey"
+            android:parentActivityName=".FormsActivity"
+            android:theme="@style/AppTheme.ActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jarnin.quickmed.FormsActivity" ></meta-data>
+        </activity>
     </application>
 
 </manifest>

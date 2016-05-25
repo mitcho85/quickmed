@@ -25,7 +25,7 @@ public class FormsActivity extends AppCompatActivity {
         surveyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FormsActivity.this, BlankActivity.class);
+                Intent intent = new Intent(FormsActivity.this, SurveyFormActivity.class);
                 startActivity(intent);
             }
         });

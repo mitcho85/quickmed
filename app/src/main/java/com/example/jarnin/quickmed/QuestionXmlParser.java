@@ -53,7 +53,7 @@ public class QuestionXmlParser {
     private String type = "type";
     private String response = "response";
 
-    private String fileName = "";
+    private String fileName = "questions.xml";
     private XmlPullParserFactory xmlFactoryObject;
     public volatile boolean parsingComplete = true;
 
