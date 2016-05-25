@@ -2,9 +2,12 @@ package com.example.jarnin.quickmed;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.Date;
 
 /**
  * Created by jarnin on 5/20/16.
@@ -23,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //Patients table column names
     private static final String KEY_ID = "ID";
     private static final String KEY_NAME = "NAME";
-    private static final String KEY_AGE = "AGE";
+    private static final String KEY_BIRTHDAY = "BIRTHDAY";
     private static final String KEY_WEIGHT = "WEIGHT";
     private static final String KEY_HEIGHT = "HEIGHT";
 
@@ -34,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_PATIENTS +
-                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AGE INTEGER, WEIGHT INTEGER, HEIGHT INTEGER)");
+                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, BIRTHDAY STRING, WEIGHT INTEGER, HEIGHT INTEGER)");
     }
 
     @Override
@@ -47,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_NAME, "");
-        contentValues.put(KEY_AGE, -1);     //-1 default value
+        contentValues.put(KEY_BIRTHDAY, "0/00/0000");     //default value
         contentValues.put(KEY_HEIGHT, -1);
         contentValues.put(KEY_WEIGHT, -1);
         long result = db.insert(TABLE_PATIENTS, null, contentValues);
@@ -56,5 +59,18 @@ public class DBHelper extends SQLiteOpenHelper {
             return false;
         else
             return true;
+    }
+
+    public Cursor getPatient(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] selectionArgs = {name};
+        Cursor cursor = db.query(TABLE_PATIENTS, null, "NAME = ?", selectionArgs, null, null, null);
+        return cursor;
+    }
+
+    public Cursor getAllPatients() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PATIENTS + ";", null);
+        return cursor;
     }
 }

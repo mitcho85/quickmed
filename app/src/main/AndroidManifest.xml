@@ -56,7 +56,16 @@
             android:theme="@style/AppTheme.ActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jarnin.quickmed.FormsActivity" ></meta-data>
+                android:value="com.example.jarnin.quickmed.FormsActivity" />
+        </activity>
+        <activity
+            android:name=".FindPatientActivity"
+            android:label="Find Patient"
+            android:parentActivityName=".FormsActivity"
+            android:theme="@style/AppTheme.ActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jarnin.quickmed.UserActivity" />
         </activity>
         <activity
             android:name=".SurveyFormActivity"
