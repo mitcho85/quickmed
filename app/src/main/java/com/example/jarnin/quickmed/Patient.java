@@ -1,11 +1,14 @@
 package com.example.jarnin.quickmed;
 
+import java.util.Date;
+
 /**
  * Created by jarnin on 5/20/16.
  */
 public class Patient {
     private int age, weight, height;
     private String name;
+    private Date birthday;
 
     //Setters and Getters
     public int getAge() {
@@ -24,6 +27,10 @@ public class Patient {
         return name;
     }
 
+    public Date getBirthday() {
+        return birthday;
+    }
+
     public void setWeight(int weight) {
         this.weight = weight;
     }
@@ -38,5 +45,9 @@ public class Patient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 }

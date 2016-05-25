@@ -1,6 +1,7 @@
 package com.example.jarnin.quickmed;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
@@ -23,18 +24,28 @@ public class FindPatientActivity extends AppCompatActivity {
     // Search EditText
     EditText inputSearch;
 
+    DBHelper dbHelper;
+
+    // Listview Data
+    // Store names/birthdays into this
+    ArrayList<String> patients;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_patient);
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        // Listview Data
-        // Store names/birthdays into this
-        String patients[] = {};
+        //Access database and grab patient data
+        dbHelper = new DBHelper(this);
+        Cursor results = dbHelper.getAllPatients();
+        patients = new ArrayList<String>();
+        for(int i = 0; results.moveToNext(); i++) {
+            patients.add(i, results.getString(1) + " Birthday:" + results.getString(2));
+        }
+
 
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.patientSearchBar);
