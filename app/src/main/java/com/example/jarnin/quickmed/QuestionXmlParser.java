@@ -56,6 +56,7 @@ public class QuestionXmlParser {
     private String response = "response";
 
     private ArrayList<Question> questionArray = new ArrayList<Question>();
+    private ArrayList<Section> sectionArray = new ArrayList<Section>();
     private int xmlResourceFile = 0;
     private XmlPullParserFactory xmlFactoryObject;
     public volatile boolean parsingComplete = true;
@@ -85,6 +86,35 @@ public class QuestionXmlParser {
         return this.response;
     }
 
+    public class Section {
+        private String section = "";
+        private int questionNumber;
+        private int numQuestionsThisSection;
+        private ArrayList<Question> thisSectionsQuestions;
+
+        public Section (String section) {
+            this.section = section;
+            thisSectionsQuestions = new ArrayList<Question>();
+            this.questionNumber = 0;
+        }
+
+        private void addQuestionToThisSection(Question question) {
+            thisSectionsQuestions.add(question);
+            Log.e("SECTION", "added a new question to section: " + this.section);
+        }
+
+        public Question getNextQuestionThisSection() {
+            Log.e("NUMBER", "current question number: " + this.questionNumber);
+            Question returnQuestion = thisSectionsQuestions.get(this.questionNumber);
+            this.questionNumber++;
+            return returnQuestion;
+
+        }
+
+        public int getNumQuestionsThisSection() {
+            return this.thisSectionsQuestions.size();
+        }
+    }
     public class Question {
         private String section = "";
         private String questionText = "";
@@ -115,13 +145,18 @@ public class QuestionXmlParser {
         }
     }
 
-    public Question getNextQuestion(String questionSection, int
+    public Question getNextQuestion(int questionSection, int
             questionNumber) {
-        return this.questionArray.get(questionNumber);
+        return this.sectionArray.get(questionSection).getNextQuestionThisSection();
+        //return this.questionArray.get(questionNumber);
     }
 
-    private void pushNewQuestionToList(Question newQuestion) {
+    public int getNumQuestionsThisSection(int section) {
+        return this.sectionArray.get(section).getNumQuestionsThisSection();
+    }
+    private void pushNewQuestionToList(Question newQuestion, int sectionNumber) {
         this.questionArray.add(newQuestion);
+        this.sectionArray.get(sectionNumber).addQuestionToThisSection(newQuestion);
     }
 
     public void parseXMLAndStoreIt() {
@@ -134,15 +169,13 @@ public class QuestionXmlParser {
             XmlPullParser parser = xmlFactoryObject.newPullParser();
             parser.setInput(stream, null);
             event = parser.getEventType();
-
+            int sectionNumber = 0;
             while(event != XmlPullParser.END_DOCUMENT) {
                 String entryName = parser.getName();
-                Log.e("parser", "parseXMLAndStoreIt: " + entryName);
-                Log.e("parser", "event: " + event);
+                //Log.e("parser", "parseXMLAndStoreIt: " + entryName);
+                //Log.e("parser", "event: " + event);
                 switch(event) {
                     case XmlPullParser.START_TAG:
-                        //if(entryName.equals("question"))
-
                         break;
 
                     case XmlPullParser.TEXT:
@@ -150,16 +183,22 @@ public class QuestionXmlParser {
                         break;
                     case XmlPullParser.END_TAG:
                         //section title, won't change until we hit new section
-                        if (entryName.equals("title"))
+                        if (entryName.equals("title")) {
                             title = entryText;
+                            sectionArray.add(new Section(title));
+                            Log.e("SECTION", "added new section: " + title);
+                            sectionNumber++;
+                        }
 
                         //at this point we should have all info needed to make
                         //a question: section Title, question text, type, response
                         else if (entryName.equals("question")){
                             Question questionToPush = new Question(this.title, this.type, this
                                     .text, this.response);
-                            pushNewQuestionToList(questionToPush);
+                            pushNewQuestionToList(questionToPush, sectionNumber-1);
+
                             System.out.println("PUSHING NEW QUESTION TO ARRAYLIST");
+
 
                         }
 

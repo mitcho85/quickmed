@@ -221,8 +221,8 @@ public class SurveyFormActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.survey_question_form, container,
                     false);
             int i = getArguments().getInt(ARG_SECTION_NUMBER);
-            String section = getResources().getStringArray(R.array.sections_array)[i];
-
+            String sectionName = getResources().getStringArray(R.array.sections_array)[i];
+            int section = i;
             /*TextView tv_question1= (TextView) rootView.findViewById(R.id
                     .surveyQuestion_tv_box1);
             TextView tv_question2= (TextView) rootView.findViewById(R.id
@@ -245,7 +245,7 @@ public class SurveyFormActivity extends AppCompatActivity {
 
                  Note that the fragment is gotten above by rootView
              */
-            int questionNumbersToDisplay = 10;
+            int questionNumbersToDisplay = parser.getNumQuestionsThisSection(section);
             QuestionXmlParser.Question q;
 
             LinearLayout lay = (LinearLayout) rootView.findViewById(R.id.fragment_linear_questions);
@@ -293,7 +293,7 @@ public class SurveyFormActivity extends AppCompatActivity {
             */
 
 
-            getActivity().setTitle(section);
+            getActivity().setTitle(sectionName);
             return rootView;
         }
     }
