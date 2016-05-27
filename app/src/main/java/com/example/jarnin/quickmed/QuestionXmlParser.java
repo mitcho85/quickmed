@@ -213,7 +213,6 @@ public class QuestionXmlParser {
                         }
                         break;
                 }
-                //Push the new question to the questionArray here
 
                 event = parser.next();
             }

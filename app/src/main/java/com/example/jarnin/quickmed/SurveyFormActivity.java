@@ -215,6 +215,11 @@ public class SurveyFormActivity extends AppCompatActivity {
             // Empty constructor required for fragment subclasses
         }
 
+        /*
+            Note that this fuction will run only once: on INFLATE of the fragment. We need to
+            store the values so we're going to need to instantiate the parser again to save to
+            the XML, since currently it's instantiated only to display the questions really.
+         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -245,6 +250,9 @@ public class SurveyFormActivity extends AppCompatActivity {
 
                  Note that the fragment is gotten above by rootView
              */
+
+            //for now, questionNumbersToDisplay will just do the entirety of all questions in the
+            // given section.
             int questionNumbersToDisplay = parser.getNumQuestionsThisSection(section);
             QuestionXmlParser.Question q;
 
@@ -253,7 +261,17 @@ public class SurveyFormActivity extends AppCompatActivity {
             EditText et_response = new EditText(getActivity());
             ArrayList<TextView> arrayQuestionTexts= new ArrayList<TextView>();
             ArrayList<EditText> arrayResponseTexts= new ArrayList<EditText>();
+
+            /*
+                variableQNum is supposed to get the questions to display, and decrement them as we
+                display them out. This was a feature for paging within the fragments so the user
+                isn't blasted with the entire catalog of questions of each section at the same time.
+            */
             int variableQNum = questionNumbersToDisplay;
+            /*
+                thisQuestionNumber is supposed to iterate through and display all parsed
+                questions using parser.GetNextQuestion.
+             */
             int thisQuestionNumber = 0;
             while(variableQNum > 0) {
                 q = parser.getNextQuestion(section, thisQuestionNumber);
@@ -270,6 +288,8 @@ public class SurveyFormActivity extends AppCompatActivity {
                 lay.addView(arrayQuestionTexts.get(0));
                 lay.addView(arrayResponseTexts.get(0));
 
+                //this is NOT what we want long term. this is to just get the questions up and
+                // displayed. we don't want to lose the references to the assets.
                 arrayQuestionTexts.remove(0);
                 arrayResponseTexts.remove(0);
 
