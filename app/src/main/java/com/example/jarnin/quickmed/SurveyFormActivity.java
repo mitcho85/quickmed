@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -78,6 +79,10 @@ public class SurveyFormActivity extends AppCompatActivity {
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
+
+            /*
+                current candidate for when to save the menu options, along with onDrawerOpened.
+             */
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -103,6 +108,7 @@ public class SurveyFormActivity extends AppCompatActivity {
         parser.parseXMLAndStoreIt();
         int questionNumber = 0;
 
+        //We haven't inflated this view yet, so just server up the first item in the drawer
         if (savedInstanceState == null) {
             //select the top most item in the drawer (in this
             // case the general information fragment
@@ -162,6 +168,11 @@ public class SurveyFormActivity extends AppCompatActivity {
         }
     }
 
+    /*
+        so this is initially called because savedInstaceState == null. So if we call it every
+        time thereafter, then we can save the data written at that time.. is the current running
+        theory anyway.
+     */
     private void selectItem(int position) {
         // update the main content by replacing fragments
         SurveyFormFragment fragment = new SurveyFormFragment();
@@ -172,6 +183,8 @@ public class SurveyFormActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.addToBackStack(null);
+
+        //THIS is where the magic happens. When the fragment is commited.
         fragmentTransaction.commit();
 
         // update selected item and title, then close the drawer
@@ -219,6 +232,17 @@ public class SurveyFormActivity extends AppCompatActivity {
             Note that this fuction will run only once: on INFLATE of the fragment. We need to
             store the values so we're going to need to instantiate the parser again to save to
             the XML, since currently it's instantiated only to display the questions really.
+
+            This is called after selectMenuItem, so we can do one of two things:
+                Eveything this is called (and yes, this would include the first time) we save the
+                 "response" data. the problem is of course, that the response data the first time
+                 contains not only NOTHING, but the questions aren't even populated (and neither
+                 are the layout assets).
+                Find somewhere else where we can call the response saving method. This would be
+                 some sort of destructor for the fragment normally but the problem here is that it
+                 doesn't look like the system actually destroys the fragment when a new one pops
+                 up (or rather, is inflated). Instead I guess it just.. replaces the view with
+                 new information, so not really a destruction...
          */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -279,14 +303,23 @@ public class SurveyFormActivity extends AppCompatActivity {
                 arrayQuestionTexts.add(new TextView(getActivity()));
                 arrayQuestionTexts.get(arrayQuestionTexts.size()-1).setText(q.getQuestionText());
                 arrayResponseTexts.add(new EditText((getActivity())));
-                //arrayResponseTexts.get(arrayResponseTexts.size()-1);
+	            arrayResponseTexts.get(arrayResponseTexts.size()-1).setText((q.getResponse()));
+
+
                 variableQNum--;
                 thisQuestionNumber++;
             }
+	        thisQuestionNumber = 0;
             //populate the fragment
             while(!arrayQuestionTexts.isEmpty()) {
                 lay.addView(arrayQuestionTexts.get(0));
                 lay.addView(arrayResponseTexts.get(0));
+
+                //this will be the last child view added. aka the editable one
+                String tagStr = "qtag" + (lay.getTouchables().size() - 1);
+
+                //Log.e("TOUCHABLES", "tagStr: " + tagStr);
+                lay.getChildAt(lay.getChildCount() - 1).setTag(tagStr);
 
                 //this is NOT what we want long term. this is to just get the questions up and
                 // displayed. we don't want to lose the references to the assets.
@@ -315,6 +348,17 @@ public class SurveyFormActivity extends AppCompatActivity {
 
             getActivity().setTitle(sectionName);
             return rootView;
+        }
+
+        @Override
+        public void onDestroyView() {
+            //The hope is that we can still call get view BEFORE it's destroyed anyway lol
+            LinearLayout lay = (LinearLayout) getView().findViewById(R.id
+                    .fragment_linear_questions);
+
+            //Log.e("VIEW", "able to access onDestroyView before it blows up");
+            parser.saveFragmentDataToTempSurvey(getView(), getArguments().getInt(ARG_SECTION_NUMBER));
+            super.onDestroyView();
         }
     }
 }

@@ -3,6 +3,10 @@ package com.example.jarnin.quickmed;
 import android.content.Context;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import java.io.StringReader;
 import org.xmlpull.v1.*;
 
@@ -55,8 +59,8 @@ public class QuestionXmlParser {
     private String type = "type";
     private String response = "response";
 
-    private ArrayList<Question> questionArray = new ArrayList<Question>();
-    private ArrayList<Section> sectionArray = new ArrayList<Section>();
+    private static ArrayList<Question> questionArray = new ArrayList<Question>();
+    private static ArrayList<Section> sectionArray = new ArrayList<Section>();
     private int xmlResourceFile = 0;
     private XmlPullParserFactory xmlFactoryObject;
     public volatile boolean parsingComplete = true;
@@ -86,7 +90,7 @@ public class QuestionXmlParser {
         return this.response;
     }
 
-    public class Section {
+    public static class Section {
         private String section = "";
         private int questionNumber;
         private int numQuestionsThisSection;
@@ -100,19 +104,33 @@ public class QuestionXmlParser {
 
         private void addQuestionToThisSection(Question question) {
             thisSectionsQuestions.add(question);
-            Log.e("SECTION", "added a new question to section: " + this.section);
+            //Log.e("SECTION", "added a new question to section: " + this.section);
         }
 
         public Question getNextQuestionThisSection() {
-            Log.e("NUMBER", "current question number: " + this.questionNumber);
+            //Log.e("NUMBER", "current question number: " + this.questionNumber);
             Question returnQuestion = thisSectionsQuestions.get(this.questionNumber);
             this.questionNumber++;
+            if(this.questionNumber >= thisSectionsQuestions.size())
+                questionNumber = 0;
             return returnQuestion;
 
         }
 
         public int getNumQuestionsThisSection() {
             return this.thisSectionsQuestions.size();
+        }
+
+        //this method is intended to serve the section name upward given the arg from the drawer
+        // handling the fragments
+        public String getSectionName() {
+            return section;
+        }
+
+        public synchronized void setResponse(int questionNumber, String response) {
+            Log.e("RESPONSE", "to question #: " + questionNumber + " setting response: " +
+                    response);
+            thisSectionsQuestions.get(questionNumber).setResponseText(response);
         }
     }
     public class Question {
@@ -143,12 +161,14 @@ public class QuestionXmlParser {
         public String getResponse() {
             return this.response;
         }
+
+        public void setResponseText(String response) {
+            this.response = response;
+        }
     }
 
-    public Question getNextQuestion(int questionSection, int
-            questionNumber) {
+    public Question getNextQuestion(int questionSection, int questionNumber) {
         return this.sectionArray.get(questionSection).getNextQuestionThisSection();
-        //return this.questionArray.get(questionNumber);
     }
 
     public int getNumQuestionsThisSection(int section) {
@@ -159,10 +179,54 @@ public class QuestionXmlParser {
         this.sectionArray.get(sectionNumber).addQuestionToThisSection(newQuestion);
     }
 
+    /*
+        We need a method to save this section's responses to the XML based on what fragment we're
+         leaving. This requires we get ARG_SECTION_NUMBER from the activity so we parse only that
+          section. Apparently though it will parse linearly through the xml file but maybe that
+          doesn't matter..
+          questions for another time.
+     */
+    public void saveFragmentDataToTempSurvey(View rootView, int sectionID) {
+        /*
+            need to iterate through all the elements in this view and store the values to the
+            questions_patient temp xml file
+        */
+
+        LinearLayout lay = (LinearLayout) rootView.findViewById(R.id.fragment_linear_questions);
+        //now it would be easy to just take total children / 2 and iterate every second child
+        // (question/answer question/answer etc) but some of these questions will have more than
+        // one element in total of that particular question. Not sure yet how to find which
+        // element is a child or not...
+        ArrayList<View> touchables = lay.getTouchables();
+
+        //Log.e("TOUCHABLES", "CURRENT SIZE OF sectionArray: " + sectionArray.size());
+        //Log.e("TOUCHABLES", "CURRENT SIZE OF touchables: " + touchables.size());
+
+        for(int i = 0; i < sectionArray.get(sectionID).getNumQuestionsThisSection(); i++) {//if
+	        // (touchables.get(1).getTag() ==
+	        // "qtag1"){
+	        String qTag = "qtag" + i;
+	        EditText t = (EditText) lay.findViewWithTag(qTag);
+	        //Log.e("TOUCHABLES", "ID of t: " + t.get);
+	        //if (t != null) {
+		        String response = t.getText().toString();
+		        Log.e("TOUCHABLES", t.getText().toString());
+		        this.sectionArray.get(sectionID).setResponse(i, response);
+	        //} else
+		      //  Log.e("TOUCHABLES", "get text is null");
+	        //sectionArray.get(0).setResponse(0, t
+	        // .getText().toString());
+	        //}
+        }
+
+
+    }
+
+
     public void parseXMLAndStoreIt() {
         int event;
         String entryText = null;
-        InputStream stream = context.getResources().openRawResource(R.raw.questions);
+        InputStream stream = context.getResources().openRawResource(R.raw.questions_patient);
 
         try {
             xmlFactoryObject = XmlPullParserFactory.newInstance();

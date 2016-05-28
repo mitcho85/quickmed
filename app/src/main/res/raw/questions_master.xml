@@ -5,6 +5,16 @@
 		FreeResponse
 		YesNo
 		ValueRange10
+	
+	
+	We need to include patient data per the db written by the other guys. Currently the patient data
+	present: 
+		Name, DOB, Age, Weight, Height
+	
+	For now, we can just ignore any other sort of data on the assumption that this survey will be
+	uploaded in parallel with the patient data submitted in other parts of the app. Plus, enough
+	relevant data is being put in the "General Information" section to start off anyway.
+	
 -->
 
 <survey>
